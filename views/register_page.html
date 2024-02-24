@@ -1,0 +1,10 @@
+{{ define "content" }}
+<form method="post" action="/auth/register">
+    {{ template "auth_form_fields" }}
+    <div class="mb-3">
+        <label for="password" class="form-label">Repeat password</label>
+        <input name="password_repeat" type="password" class="form-control" id="password_repeat" placeholder="Repeat password" required>
+    </div>
+    <button type="submit" class="btn btn-dark">Register</button>
+</form>
+{{ end }}

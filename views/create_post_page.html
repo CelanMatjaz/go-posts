@@ -1,0 +1,27 @@
+{{ define "content" }}
+
+<div class="create-post mt-4 pl-4 row">
+    <div class="col-2"></div>
+    <div class="col-8 mx-auto" style="max-width: 600px;">
+        <form action="/api/posts" method="post">
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea 
+                    name="content" 
+                    type="text" 
+                    class="form-control" 
+                    id="content" 
+                    placeholder="Content" 
+                    required 
+                    autofocus 
+                    style="min-height: 100px; max-height: 500px"
+                    maxlength="1024"
+                ></textarea>
+            </div>
+            <button type="submit" class="btn btn-dark">Post</button>
+        </form>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+{{ end }}

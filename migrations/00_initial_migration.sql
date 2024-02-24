@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS users (
+    id UUID NOT NULL PRIMARY KEY,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(60)
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    id UUID NOT NULL PRIMARY KEY,
+    user_id UUID REFERENCES users(id) NOT NULL,
+    content VARCHAR(1024) NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
+);
