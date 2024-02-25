@@ -1,9 +1,17 @@
 {{ define "content" }}
 
+
 <div class="position-relative">
     <h1>Hello {{ .Username }}!</h1>
     <a href="/posts/create" class="btn btn-dark color-white position-absolute top-0 end-0">Create post</a>
 </div>
+
+<script>
+    async function deletePost(id) {
+        await fetch(`/api/posts/${id}`, { method: "DELETE" });
+        location.reload();
+    }
+</script>
 
 <div class="posts mt-4 pl-4 row">
     <div class="col-2"></div>

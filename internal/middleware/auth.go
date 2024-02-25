@@ -11,7 +11,7 @@ func EnsureAuthenticatedMiddleware(next http.Handler) http.Handler {
 	    ctx := &utils.CustomContext{r, w}
 
 		if !ctx.IsAuthenticated() {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+            ctx.Redirect("/login")
 		} else {
 			next.ServeHTTP(w, r)
 		}
