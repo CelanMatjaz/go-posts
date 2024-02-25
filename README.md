@@ -1,6 +1,6 @@
 # Go-posts
 
-Simple fullstack app written in Go where users can post posts.
+Simple fullstack app written in Go where users can post posts. Project was meant primarily for learning Go.
 
 ## Run 
 
