@@ -19,6 +19,18 @@ func (context *CustomContext) ParseQueryInt(key string) int {
 	return value
 }
 
+func (context *CustomContext) ParseQueryBool(key string) bool {
+	if val := context.R.URL.Query().Get(key); val == "1" || val == "true" {
+		return true
+	}
+	return false
+}
+
+func (context *CustomContext) ParseQueryAsUUID(key string) (uuid.UUID) {
+	id, _ := uuid.Parse(context.R.URL.Query().Get(key))
+	return id
+}
+
 func (context *CustomContext) WriteJson(val any) {
 	context.W.Header().Add("Content-type", "application/json")
 	json.NewEncoder(context.W).Encode(val)
@@ -38,7 +50,7 @@ func (context *CustomContext) Vars() map[string]string {
 
 func (context *CustomContext) ParseVarAsUUID(key string) (uuid.UUID, error) {
 	id, err := uuid.Parse(mux.Vars(context.R)[key])
-    return id, err
+	return id, err
 }
 
 func (context *CustomContext) Redirect(path string) {

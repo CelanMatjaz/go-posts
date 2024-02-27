@@ -4,7 +4,31 @@
     <div class="col-2"></div>
     <div class="col-8 mx-auto" style="max-width: 600px;">
         {{ template "post" .Post }}
+
+        <div class="comments mt-3">
+            <div class="mt-3 mb-3">
+                {{ if showCommentBox }}
+                <form action="/api/comments" method="post">
+                    <textarea name="content" type="text" class="form-control" id="content" placeholder="Content"
+                        required autofocus style="min-height: 50px; max-height: 500px" maxlength="256"></textarea>
+                    <input type="text" name="post_id" id="post_id" style="display: none;" value="{{ .Post.Id }}">
+                    <button class="btn btn-dark mt-2" type="submit">Comment</button>
+                </form>
+                {{ else }}
+                <div>
+                    <button class="btn btn-dark" onclick="redirect = () => {
+                    location.replace(location.pathname + '?showCommentBox=1')
+                }; redirect()">Comment</button>
+                </div>
+                {{ end }}
+            </div>
+
+            {{ range .Comments }}
+            {{ template "comment" . }}
+            {{ end }}
+        </div>
     </div>
+
     <div class="col-2"></div>
 </div>
 

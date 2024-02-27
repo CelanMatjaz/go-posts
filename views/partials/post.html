@@ -16,7 +16,16 @@
     {{ if eq getUserId .UserId }}
     <div>
         <a class="align-top" href="/posts/update/{{ .Id }}">Edit</a>
-        <button class="btn btn-link align-top border-0" onclick="deletePost({{ .Id }})" style="padding: 0;">Delete</button>
+
+        {{ if isPostPage }}
+        <button class="btn btn-link align-top border-0" onclick="deletePost({{ .Id }}, '/account')"
+            style="padding: 0;">Delete</button>
+        {{ else }}
+        <button class="btn btn-link align-top border-0" onclick="deletePost({{ .Id }})"
+            style="padding: 0;">Delete</button>
+        <a class="float-end" href="/posts/{{ .Id }}">View</a>
+        {{ end }}
+
     </div>
     {{ end }}
 </div>

@@ -35,7 +35,8 @@ func AddPostsRoutes(r *mux.Router) {
 
 type PostsContext struct {
 	IsLoggedIn bool
-    Post types.PostWithUsername
+	Post       types.PostWithUsername
+	Comments   []types.CommentWithUsername
 }
 
 func singlePostPage(w http.ResponseWriter, r *http.Request) {
@@ -58,9 +59,11 @@ func singlePostPage(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.New("layout.html").Funcs(template.FuncMap{
 		"formatDate": utils.FormatDate,
-		"getUserId": func() uuid.UUID  { return ctx.GetId() },
-	}).ParseFiles("views/layout/layout.html", "views/partials/navbar.html", "views/partials/post.html", "views/single_post_page.html"))
-    tmpl.Execute(w, PostsContext{IsLoggedIn: ctx.IsAuthenticated(), Post: post})
+		"getUserId": func() uuid.UUID { return ctx.GetId() },
+        "isPostPage": func() bool { return true },
+        "showCommentBox": func() bool { return ctx.ParseQueryBool("showCommentBox") },
+	}).ParseFiles("views/layout/layout.html", "views/partials/navbar.html", "views/partials/post.html", "views/partials/comment.html", "views/single_post_page.html"))
+    tmpl.Execute(w, PostsContext{IsLoggedIn: ctx.IsAuthenticated(), Post: post, Comments: services.GetCommentsOfPost(post.Id, 0, 0)})
 }
 
 func createPostPage(w http.ResponseWriter, r *http.Request) {
@@ -88,8 +91,8 @@ func updatePostPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := template.Must(template.ParseFiles("views/layout/layout.html", "views/partials/navbar.html", "views/update_post_page.html"))
-    err =tmpl.Execute(w, PostsContext{IsLoggedIn: ctx.IsAuthenticated(), Post: post})
-    utils.CheckError(err)
+	err = tmpl.Execute(w, PostsContext{IsLoggedIn: ctx.IsAuthenticated(), Post: post})
+	utils.CheckError(err)
 }
 
 func getPosts(w http.ResponseWriter, r *http.Request) {
@@ -134,9 +137,9 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	_, err := services.CreatePost(newPost)
 
 	if err != nil {
-        ctx.WriteBadRequest()
-        ctx.Redirect("/")
-        return
+		ctx.WriteBadRequest()
+		ctx.Redirect("/")
+		return
 	}
 
 	ctx.Redirect("/account")
@@ -145,15 +148,15 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 func updatePost(w http.ResponseWriter, r *http.Request) {
 	ctx := &utils.CustomContext{r, w}
 
-    id, err := ctx.ParseVarAsUUID("post_id")
+	id, err := ctx.ParseVarAsUUID("post_id")
 
-    if err != nil {
-        ctx.Redirect("/posts")
-        return
-    }
-	
-    updatedPost := types.Post{}
-    updatedPost.Id = id
+	if err != nil {
+		ctx.Redirect("/posts")
+		return
+	}
+
+	updatedPost := types.Post{}
+	updatedPost.Id = id
 	updatedPost.Content = r.FormValue("content")
 
 	if length := len(updatedPost.Content); length == 0 || length > 1024 {
@@ -161,8 +164,8 @@ func updatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    services.UpdatePost(updatedPost)
-    ctx.Redirect("/posts/" + updatedPost.Id.String())
+	services.UpdatePost(updatedPost)
+	ctx.Redirect("/posts/" + updatedPost.Id.String())
 }
 
 func deletePost(w http.ResponseWriter, r *http.Request) {

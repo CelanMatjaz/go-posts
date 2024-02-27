@@ -32,6 +32,7 @@ func AccountPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.New("layout.html").Funcs(template.FuncMap{
 		"formatDate": utils.FormatDate,
 		"getUserId": func() uuid.UUID  { return ctx.GetId() },
+        "isPostPage": func() bool { return false },
 	}).ParseFiles("views/layout/layout.html", "views/partials/navbar.html", "views/account_page.html", "views/partials/post.html"))
 	var username string = ctx.GetUsername()
 	var posts []types.PostWithUsername = services.GetPostsOfUser(0, 0, ctx.GetId())

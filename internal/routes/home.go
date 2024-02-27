@@ -26,6 +26,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.New("layout.html").Funcs(template.FuncMap{
 		"formatDate": utils.FormatDate,
 		"getUserId": func() uuid.UUID  { return ctx.GetId() },
+        "isPostPage": func() bool { return false },
 	}).ParseFiles("views/layout/layout.html", "views/partials/navbar.html", "views/home_page.html", "views/partials/post.html"))
 	var posts []types.PostWithUsername = services.GetPosts(0, 10)
 	tmpl.Execute(w, HomeContext{Posts: posts, IsLoggedIn: ctx.IsAuthenticated()})

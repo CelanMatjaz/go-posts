@@ -21,6 +21,7 @@ func main() {
 	routes.AddAuthRoutes(r)
 	routes.AddAccountRoutes(r)
     routes.AddPostsRoutes(r)
+    routes.AddCommentsRoutes(r)
 
 	srv := &http.Server{
 		Handler: r,

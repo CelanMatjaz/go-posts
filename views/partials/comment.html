@@ -1,0 +1,18 @@
+{{ define "comment" }}
+
+<div class="post rounded border border-muted p-2 mt-2">
+    {{ .Content }}
+    <hr class="mb-1">
+    <div class="row">
+        <div class="col">
+            <span class="float-start text-muted">
+                posted by <a href="/account/{{ .Username }}">{{ .Username }}</a>
+            </span>
+        </div>
+        <div class="col">
+            <span class="float-end text-muted">{{ formatDate .CreatedAt }}</span>
+        </div>
+    </div>
+</div>
+
+{{ end }}

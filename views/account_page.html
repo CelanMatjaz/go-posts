@@ -6,22 +6,15 @@
     <a href="/posts/create" class="btn btn-dark color-white position-absolute top-0 end-0">Create post</a>
 </div>
 
-<script>
-    async function deletePost(id) {
-        await fetch(`/api/posts/${id}`, { method: "DELETE" });
-        location.reload();
-    }
-</script>
-
 <div class="posts mt-4 pl-4 row">
     <div class="col-2"></div>
     <div class="col-8 mx-auto" style="max-width: 600px;">
         {{ if .Posts }}
-            {{ range .Posts }}
-                {{ template "post" . }}                
-            {{ end }}        
+        {{ range .Posts }}
+        {{ template "post" . }}
+        {{ end }}
         {{ else }}
-            <h2>No posts yet!</h2>
+        <h2>No posts yet!</h2>
         {{ end }}
     </div>
     <div class="col-2"></div>

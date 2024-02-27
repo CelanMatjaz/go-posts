@@ -21,4 +21,15 @@
     <footer class="mt-4"></footer>
 </body>
 
+<script>
+    async function deletePost(id, redirect) {
+        await fetch(`/api/posts/${id}`, {method: "DELETE"});
+        if (redirect) {
+            location.pathname = redirect
+        } else {
+            location.reload();
+        }
+    }
+</script>
+
 </html>
