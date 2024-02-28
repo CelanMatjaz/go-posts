@@ -1,7 +1,13 @@
 {{ define "comment" }}
 
-<div class="post rounded border border-muted p-2 mt-2">
-    {{ .Content }}
+<div class="comment rounded border border-muted p-2 mt-2 comment-{{ .Id }}">
+    <div class="content">
+        <span>{{ .Content }}</span>
+        <div style="display: none;">
+            <textarea class="form-control">{{ .Content }}</textarea>
+            <button class="btn btn-dark btn-sm mt-2" onclick="editComment('{{ .Id }}')">Edit</button>
+        </div>
+    </div>
     <hr class="mb-1">
     <div class="row">
         <div class="col">
@@ -13,6 +19,14 @@
             <span class="float-end text-muted">{{ formatDate .CreatedAt }}</span>
         </div>
     </div>
+    {{ if eq getUserId .UserId }}
+    <div>
+        <button class="btn btn-link border-0 p-0 col" onclick="showCommentEdit('{{ .Id }}')"
+            style="padding: 0;">Edit</button>
+        <button class="btn btn-link border-0 p-0 col" onclick="deleteComment('{{ .Id }}')"
+            style="padding: 0;">Delete</button>
+    </div>
+    {{ end }}
 </div>
 
 {{ end }}

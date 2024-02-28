@@ -22,7 +22,6 @@
                 </div>
                 {{ end }}
             </div>
-
             {{ range .Comments }}
             {{ template "comment" . }}
             {{ end }}
@@ -31,5 +30,21 @@
 
     <div class="col-2"></div>
 </div>
+
+<script>
+    function showCommentEdit(id) {
+        const el = document.querySelector(`.comment-${id}`)
+        el.querySelector('.content span').style = "display: none"
+        el.querySelector('.content div').style = "display: block"
+    }
+    async function editComment(id) {
+        await fetch(`/api/comments/${id}?content=${document.querySelector(`.comment-${id} textarea`).value}`, { method: 'PUT' });
+        location.reload();
+    }
+    async function deleteComment(id) {
+        await fetch(`/api/comments/${id}`, { method: 'DELETE' });
+        location.reload();
+    }
+</script>
 
 {{ end }}

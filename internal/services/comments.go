@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/CelanMatjaz/go-posts/database"
@@ -51,11 +52,12 @@ func CreateComment(newComment types.NewComment) (uuid.UUID, error) {
 }
 
 func UpdateComment(comment types.Comment) error {
-	_, err := database.DB.Exec("UPDATE comment SET content = $1, updated_at = $2 WHERE id = $3", comment.Content, time.Now(), comment.Id)
+	_, err := database.DB.Exec("UPDATE comments SET content = $1, updated_at = $2 WHERE id = $3 AND user_id = $4", comment.Content, time.Now(), comment.Id, comment.UserId)
 	return err
 }
 
-func DeleteComment(commentId uuid.UUID) error {
-	_, err := database.DB.Exec("DELETE FROM comments WHERE id = $1", commentId)
+func DeleteComment(commentId uuid.UUID, userId uuid.UUID) error {
+    fmt.Println("Djawoijdoawijdiow", commentId)
+	_, err := database.DB.Exec("DELETE FROM comments WHERE id = $1 AND user_id = $2", commentId, userId)
 	return err
 }

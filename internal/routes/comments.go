@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/CelanMatjaz/go-posts/internal/middleware"
 	"github.com/CelanMatjaz/go-posts/internal/services"
 	"github.com/CelanMatjaz/go-posts/internal/types"
 	utils "github.com/CelanMatjaz/go-posts/internal/utils"
@@ -16,11 +16,13 @@ func AddCommentsRoutes(r *mux.Router) {
 	// Api
 	api_router := r.PathPrefix("/api/comments").Subrouter()
 
+    api_router.Use(middleware.EnsureAuthenticatedMiddleware)
+
 	api_router.HandleFunc("", getComments).Methods("GET")
 	api_router.HandleFunc("/{comment_id}", getPost).Methods("GET")
 	api_router.HandleFunc("", createComment).Methods("POST")
-	api_router.HandleFunc("/update/{post_id}", updateComment).Methods("POST")
-	api_router.HandleFunc("/{post_id}", deleteComment).Methods("DELETE")
+	api_router.HandleFunc("/{comment_id}", updateComment).Methods("PUT")
+	api_router.HandleFunc("/{comment_id}", deleteComment).Methods("DELETE")
 }
 
 func getComments(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +52,6 @@ func getComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func createComment(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("djwaiohdwoiahd")
 	ctx := &utils.CustomContext{r, w}
 
 	newComment := types.NewComment{
@@ -76,31 +77,32 @@ func createComment(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateComment(w http.ResponseWriter, r *http.Request) {
-
-	/* ctx := &utils.CustomContext{r, w}
+	ctx := &utils.CustomContext{r, w}
 
 	id, err := ctx.ParseVarAsUUID("comment_id")
 
 	if err != nil {
-		ctx.Redirect("/posts")
+        ctx.WriteBadRequest()
 		return
 	}
 
-	updatedPost := types.Post{}
-	updatedPost.Id = id
-	updatedPost.Content = r.FormValue("content")
+	updatedComment := types.Comment{}
+	updatedComment.Id = id
+	updatedComment.Content = r.FormValue("content")
+    updatedComment.UserId = ctx.GetId()
 
-	if length := len(updatedPost.Content); length == 0 || length > 1024 {
-		ctx.Redirect("/posts/update")
+	if length := len(updatedComment.Content); length == 0 || length > 1024 {
+        ctx.WriteBadRequest()
 		return
 	}
 
-	services.UpdatePost(updatedPost)
-	ctx.Redirect("/posts/" + updatedPost.Id.String()) */
+    err = services.UpdateComment(updatedComment)
+    utils.CheckError(err)
 }
 
 func deleteComment(w http.ResponseWriter, r *http.Request) {
 	ctx := &utils.CustomContext{r, w}
 	id, _ := ctx.ParseVarAsUUID("comment_id")
-	services.DeleteComment(id)
+    userId := ctx.GetId()
+	services.DeleteComment(id, userId)
 }
